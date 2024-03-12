@@ -37,7 +37,7 @@ The following example demonstrates, a complete **`CRUD`** operations for `Users`
     GET http://localhost:5217/users    
     ```
 
-1. Get user by Id - Guid here will be different
+1. Get user by Id - Guid is the id of the user.
     ```
     GET http://localhost:5217/users/09d9cd58-d154-4d06-98a8-bc5442abbe72
     ```
@@ -59,12 +59,12 @@ The following example demonstrates, a complete **`CRUD`** operations for `Users`
     }
     ```
 
-1. Delete user by Id - Guid here will be different
+1. Delete user by Id - Guid is the id of the user.
     ```
     DELETE http://localhost:5217/users/09d9cd58-d154-4d06-98a8-bc5442abbe72
     ```
 
-1. Creating bulk users. This will come handy when you want to generate many users to be used in listings to create a datagrid or table.
+1. Creating bulk users. This will come handy when you want to generate many users to be used in listings to create a datagrid or table. In the following example, you are going to create 100 users. `http://localhost:5217/generate/{entityName}/{numberofEntitiesToGenerate}`
     ```
     POST http://localhost:5217/generate/users/100
     Content-Type: application/json
@@ -81,7 +81,7 @@ The following example demonstrates, a complete **`CRUD`** operations for `Users`
     }
     ```
 
-1. Delete all users. To remove all users.
+1. Delete all users. To remove all users you need to execute DELETE method on the entity without any id.
     ```
     DELETE http://localhost:5217/users
     ```
