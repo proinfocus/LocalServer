@@ -162,7 +162,10 @@ public sealed class Service : IService
         if (value.Contains("$PHONE$")) value = value.Replace("$PHONE$", fake.Phone);
         if (value.Contains("$WEBSITE$")) value = value.Replace("$WEBSITE$", fake.Website);
         if (value.Contains("$EMAIL$")) value = value.Replace("$EMAIL$", fake.Email.ToLower());
-        if (value.Contains("$ADDRESS$")) value = value.Replace("$ADDRESS$", $"{fake.Address.Suite}, {fake.Address.Street}, {fake.Address.City}, {fake.Address.State}.");
+        if (value.Contains("$SUITE$")) value = value.Replace("$SUITE$", fake.Address.Suite);
+        if (value.Contains("$STREET$")) value = value.Replace("$STREET$", fake.Address.Street);
+        if (value.Contains("$CITY$")) value = value.Replace("$CITY$", fake.Address.City);
+        if (value.Contains("$STATE$")) value = value.Replace("$STATE$", fake.Address.State);
         if (value.Contains("$GENDER$")) value = value.Replace("$GENDER$", fake.Gender.ToString());
         if (value.Contains("$ROLES$")) value = value.Replace("$ROLES$", GetRandomRoles());
         if (value.Contains("$PROFILE$")) value = value.Replace("$PROFILE$", GetRandomProfileImage(fake.Gender.ToString() == "Male" ? "men" : "women"));

@@ -103,6 +103,10 @@ In order to create realistic looking data, you can use placeholders, which will 
 | `$GENDER$`            | Replaces with a randomly generated Gender - `Male or Female`
 | `$COMPANY$`           | Replaces with a randomly generated Company Name
 | `$ADDRESS$`           | Replaces with a randomly generated Address
+| `$SUITE$`             | Replaces with a randomly generated Suite which is part of the Address
+| `$STREET$`            | Replaces with a randomly generated State which is part of the Address
+| `$CITY$`              | Replaces with a randomly generated City which is part of the Address
+| `$STATE$`             | Replaces with a randomly generated State which is part of the Address
 | `$PHONE$`             | Replaces with a randomly generated Phone number
 | `$EMAIL$`             | Replaces with a randomly generated Email address
 | `$WEBSITE$`           | Replaces with a randomly generated Website
