@@ -17,7 +17,7 @@ The following example demonstrates, a complete **`CRUD`** operations for `Users`
 
 1. Creating a user. There are some placeholders, for eg: `$GUID$`, `$USERNAME$`, etc., which will be dynamically generated while creating the user. Check out list of all placeholders.
     ```
-    POST http://localhost:5217/users
+    POST http://localhost:5217/api/users
     Content-Type: application/json
 
     {
@@ -34,17 +34,17 @@ The following example demonstrates, a complete **`CRUD`** operations for `Users`
 
 1. Get all users
     ```
-    GET http://localhost:5217/users    
+    GET http://localhost:5217/api/users    
     ```
 
 1. Get user by Id - Guid is the id of the user.
     ```
-    GET http://localhost:5217/users/09d9cd58-d154-4d06-98a8-bc5442abbe72
+    GET http://localhost:5217/api/users/09d9cd58-d154-4d06-98a8-bc5442abbe72
     ```
 
 1. Update user by Id - Guid here will be different and there are some placeholders which will be dynamically generated while updating.
     ```
-    PUT http://localhost:5217/users/09d9cd58-d154-4d06-98a8-bc5442abbe72
+    PUT http://localhost:5217/api/users/09d9cd58-d154-4d06-98a8-bc5442abbe72
     Content-Type: application/json
 
     {
@@ -61,12 +61,12 @@ The following example demonstrates, a complete **`CRUD`** operations for `Users`
 
 1. Delete user by Id - Guid is the id of the user.
     ```
-    DELETE http://localhost:5217/users/09d9cd58-d154-4d06-98a8-bc5442abbe72
+    DELETE http://localhost:5217/api/users/09d9cd58-d154-4d06-98a8-bc5442abbe72
     ```
 
-1. Creating bulk users. This will come handy when you want to generate many users to be used in listings to create a datagrid or table. In the following example, you are going to create 100 users. `http://localhost:5217/generate/{entityName}/{numberofEntitiesToGenerate}`
+1. Creating bulk users. This will come handy when you want to generate many users to be used in listings to create a datagrid or table. In the following example, you are going to create 100 users. `http://localhost:5217/api/generate/{entityName}/{numberofEntitiesToGenerate}`
     ```
-    POST http://localhost:5217/generate/users/100
+    POST http://localhost:5217/api/generate/users/100
     Content-Type: application/json
 
     {
@@ -83,7 +83,7 @@ The following example demonstrates, a complete **`CRUD`** operations for `Users`
 
 1. Delete all users. To remove all users you need to execute DELETE method on the entity without any id.
     ```
-    DELETE http://localhost:5217/users
+    DELETE http://localhost:5217/api/users
     ```
 
 ## List of Placeholders
