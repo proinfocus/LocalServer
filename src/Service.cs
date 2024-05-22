@@ -22,11 +22,7 @@ public sealed class Service : IService
             int newId = GetLastID(entity) + 1;
             newData = Format(newData, newId);
             var currentData = File.ReadAllText(file);
-            using var ms = new MemoryStream();
-            if (currentData == "[]")
-                currentData = "[" + newData + "]";
-            else
-                currentData = currentData[0..^1] + "," + newData + "]";
+            currentData = currentData == "[]" ? $"[ {newData} ]" : currentData[0..^1] + $",{newData} ]";
             await File.WriteAllTextAsync(file, currentData, cancellationToken);
             UpdateLastID(entity, newId);
             return newData;
@@ -127,10 +123,7 @@ public sealed class Service : IService
             {
                 lastId++;
                 var toAdd = Format(template, lastId);
-                if (currentData == "[]" && i == 0)
-                    sb.Append(toAdd);
-                else
-                    sb.Append("," + toAdd);
+                sb.Append((currentData == "[]" && i == 0) ? toAdd : $",{toAdd}");
             }
             sb.Append(']');
             await File.WriteAllTextAsync(file, sb.ToString(), cancellationToken);
@@ -184,7 +177,8 @@ public sealed class Service : IService
         return value;
     }
 
-    private static string GetRandomProfileImage(string gender) => $"https://randomuser.me/api/portraits/{gender}/{Random.Shared.Next(1, 201)}.jpg";
+    private static string GetRandomProfileImage(string gender)
+        => $"https://randomuser.me/api/portraits/{gender}/{Random.Shared.Next(1, 201)}.jpg";
 
     private void UpdateLastID(string entity, int id)
     {
