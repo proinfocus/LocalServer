@@ -7,6 +7,13 @@ namespace LocalServer;
 public sealed class Service : IService
 {
     private readonly string dataFolder;
+    private JsonSerializerOptions jso = new() {
+        PropertyNameCaseInsensitive = true,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public Service()
     {
         dataFolder = Path.Combine(Environment.CurrentDirectory, "data");
@@ -22,7 +29,7 @@ public sealed class Service : IService
             int newId = GetLastID(entity) + 1;
             newData = Format(newData, newId);
             var currentData = File.ReadAllText(file);
-            currentData = currentData == "[]" ? $"[ {newData} ]" : currentData[0..^1] + $",{newData} ]";
+            currentData = currentData == "[]" ? $"[ {newData} ]" : currentData[0..^1] + $",{newData.TrimEnd(',')} ]";
             await File.WriteAllTextAsync(file, currentData, cancellationToken);
             UpdateLastID(entity, newId);
             return newData;
@@ -50,17 +57,17 @@ public sealed class Service : IService
         if (!File.Exists(file)) return false;
 
         var fileData = await File.ReadAllTextAsync(file, cancellationToken);
-        var data = JsonSerializer.Deserialize<dynamic[]>(fileData);
+        var data = JsonSerializer.Deserialize<dynamic[]>(fileData, jso);
         if (data is null) return false;
         var sb = new StringBuilder();
         if (isGuid) id = $"\"{id}\"";
         for (int i = 0; i < data.Length; i++)
         {
             if (i > 0) sb.Append(',');
-            if (data[i].ToString().Contains($"\"id\": {id}")) continue;
+            if (data[i].ToString().Contains($"\"id\": {id}") || data[i].ToString().Contains($"\"id\":{id}")) continue;
             sb.Append(data[i]);
         }
-        await File.WriteAllTextAsync(file, $"[{sb}]", cancellationToken);
+        await File.WriteAllTextAsync(file, $"[{sb.ToString().TrimStart(',').TrimEnd(',')}]", cancellationToken);
         return true;
     }
 
@@ -78,7 +85,7 @@ public sealed class Service : IService
         if (!File.Exists(file)) return null;
 
         var fileData = await File.ReadAllTextAsync(file, cancellationToken);
-        var data = JsonSerializer.Deserialize<dynamic[]>(fileData);
+        var data = JsonSerializer.Deserialize<dynamic[]>(fileData, jso);
         if (data is null) return null;
         if (isGuid) id = $"\"{id}\"";
         for (int i = 0; i < data.Length; i++)
@@ -94,17 +101,17 @@ public sealed class Service : IService
         if (!File.Exists(file)) return false;
 
         var fileData = await File.ReadAllTextAsync(file, cancellationToken);
-        var data = JsonSerializer.Deserialize<dynamic[]>(fileData);
+        var data = JsonSerializer.Deserialize<dynamic[]>(fileData, jso);
         if (data is null) return false;
         var sb = new StringBuilder();
         if (isGuid) id = $"\"{id}\"";
         for (int i = 0; i < data.Length; i++)
         {
             if (i > 0) sb.Append(',');
-            if (data[i].ToString().Contains($"\"id\": {id}")) sb.Append(Format(newData));
+            if (data[i].ToString().Contains($"\"id\": {id}") || data[i].ToString().Contains($"\"id\":{id}")) sb.Append(Format(newData));
             else sb.Append(data[i]);
         }
-        await File.WriteAllTextAsync(file, $"[{sb}]", cancellationToken);
+        await File.WriteAllTextAsync(file, $"[{sb.ToString().TrimStart(',').TrimEnd(',')}]", cancellationToken);
         return true;
     }
 
@@ -126,7 +133,7 @@ public sealed class Service : IService
                 sb.Append((currentData == "[]" && i == 0) ? toAdd : $",{toAdd}");
             }
             sb.Append(']');
-            await File.WriteAllTextAsync(file, sb.ToString(), cancellationToken);
+            await File.WriteAllTextAsync(file, $"[{sb.ToString().TrimStart(',').TrimEnd(',')}]", cancellationToken);
             UpdateLastID(entity, lastId);
             return true;
         }
@@ -185,11 +192,11 @@ public sealed class Service : IService
         var file = Path.Combine(dataFolder, "local-server-settings");
         string fileData = "[]";
         if (File.Exists(file)) fileData = File.ReadAllText(file);
-        List<Counter> entities = JsonSerializer.Deserialize<List<Counter>>(fileData) ?? [];
+        List<Counter> entities = JsonSerializer.Deserialize<List<Counter>>(fileData, jso) ?? [];
         var found = entities?.Find(a => a.Entity == entity);
         if (found is not null) found.Id = id;
         else entities!.Add(new Counter(entity) { Id = id });
-        File.WriteAllText(file, JsonSerializer.Serialize(entities));
+        File.WriteAllText(file, JsonSerializer.Serialize(entities, jso));
     }
 
     private void DeleteEntity(string entity)
@@ -197,10 +204,10 @@ public sealed class Service : IService
         var file = Path.Combine(dataFolder, "local-server-settings");
         string fileData = "[]";
         if (File.Exists(file)) fileData = File.ReadAllText(file);
-        List<Counter> entities = JsonSerializer.Deserialize<List<Counter>>(fileData) ?? [];
+        List<Counter> entities = JsonSerializer.Deserialize<List<Counter>>(fileData, jso) ?? [];
         var found = entities?.Find(a => a.Entity == entity)!;
         entities?.Remove(found);
-        File.WriteAllText(file, JsonSerializer.Serialize(entities));
+        File.WriteAllText(file, JsonSerializer.Serialize(entities,jso));
     }
 
     private int GetLastID(string entity)
@@ -209,7 +216,7 @@ public sealed class Service : IService
         if (!File.Exists(file)) return 0;
 
         string fileData = File.ReadAllText(file);
-        List<Counter> entities = JsonSerializer.Deserialize<List<Counter>>(fileData)!;
+        List<Counter> entities = JsonSerializer.Deserialize<List<Counter>>(fileData, jso)!;
         var found = entities?.Find(a => a.Entity == entity);
         return found is null ? 0 : found.Id;
     }
