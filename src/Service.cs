@@ -133,7 +133,7 @@ public sealed class Service : IService
                 sb.Append((currentData == "[]" && i == 0) ? toAdd : $",{toAdd}");
             }
             sb.Append(']');
-            await File.WriteAllTextAsync(file, $"[{sb.ToString().TrimStart(',').TrimEnd(',')}]", cancellationToken);
+            await File.WriteAllTextAsync(file, $"{sb.ToString().TrimStart(',').TrimEnd(',')}", cancellationToken);
             UpdateLastID(entity, lastId);
             return true;
         }
